@@ -17,6 +17,8 @@ COPY --from=packager /passwd.minimal /etc/passwd
 COPY --from=packager /lib/ld-musl-aarch64.so.1 /lib/ld-musl-aarch64.so.1
 COPY --from=packager /usr/lib/libiperf.so.0 /usr/lib/libiperf.so.0
 COPY --from=packager /usr/bin/iperf3 /usr/bin/iperf3
+COPY --from=packager /usr/bin/tee /usr/bin/tee
+COPY --from=packager /bin/date /bin/date
 
 ENTRYPOINT ["/usr/bin/iperf3"]
 CMD ["${ARGS}"]
