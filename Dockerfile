@@ -8,7 +8,7 @@ RUN echo "nobody:x:65534:65534:Nobody:/:" > /passwd.minimal
 FROM scratch
 
 ENV LD_LIBRARY_PATH /usr/lib:/lib
-ENV ARGS "-s"
+ENV ARGS ""
 
 USER nobody
 
@@ -19,6 +19,7 @@ COPY --from=packager /usr/lib/libiperf.so.0 /usr/lib/libiperf.so.0
 COPY --from=packager /usr/bin/iperf3 /usr/bin/iperf3
 COPY --from=packager /usr/bin/tee /usr/bin/tee
 COPY --from=packager /bin/date /bin/date
+COPY --from=packager /bin/sh /bin/sh
+COPY src/startscript.sh startscript.sh
 
-ENTRYPOINT ["/usr/bin/iperf3"]
-CMD ["${ARGS}"]
+ENTRYPOINT ["./startscript.sh"]
