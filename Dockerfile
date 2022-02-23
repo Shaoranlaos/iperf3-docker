@@ -9,6 +9,8 @@ FROM scratch
 
 ENV LD_LIBRARY_PATH /usr/lib:/lib
 ENV ARGS ""
+ENV SERVER ""
+ENV SERVER_PORT ""
 
 USER nobody
 
@@ -17,9 +19,8 @@ COPY --from=packager /passwd.minimal /etc/passwd
 COPY --from=packager /lib/ld-musl-aarch64.so.1 /lib/ld-musl-aarch64.so.1
 COPY --from=packager /usr/lib/libiperf.so.0 /usr/lib/libiperf.so.0
 COPY --from=packager /usr/bin/iperf3 /usr/bin/iperf3
-COPY --from=packager /usr/bin/tee /usr/bin/tee
-COPY --from=packager /bin/date /bin/date
-COPY --from=packager /bin/sh /bin/sh
+COPY --from=packager /bin/date /bin/sh /bin/
+COPY --from=packager /usr/bin/seq /usr/bin/seq
 COPY src/startscript.sh startscript.sh
 
 ENTRYPOINT ["./startscript.sh"]
