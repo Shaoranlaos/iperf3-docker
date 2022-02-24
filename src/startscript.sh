@@ -1,22 +1,14 @@
 #!/bin/sh
 
 NR_OF_SERVERS=4
-#SERVERS[1]="ping.online.net"
-#SERVERS[2]="speedtest.serverius.net"
-#SERVERS[3]="ch.iperf.014.fr"
-#SERVERS[4]="iperf.astra.in.ua"
-#SERVER_PORTS[1]=5207
-#SERVER_PORTS[2]=5202
-#SERVER_PORTS[3]=15319
-#SERVER_PORTS[4]=5204
 SERVERS_1="ping.online.net"
 SERVERS_2="speedtest.serverius.net"
-SERVERS_3="ch.iperf.014.fr"
-SERVERS_4="iperf.astra.in.ua"
-SERVER_PORTS_0=5207
-SERVER_PORTS_1=5202
-SERVER_PORTS_2=15319
+SERVERS_3="iperf.astra.in.ua"
+SERVERS_4="ping.online.net"
+SERVER_PORTS_1=5207
+SERVER_PORTS_2=5202
 SERVER_PORTS_3=5204
+SERVER_PORTS_4=5205
 CURDATE=$(date +%F-%H-%M-%S)
 
 
@@ -29,6 +21,29 @@ run_tests()
     return 1
   fi
   /usr/bin/iperf3 -c $SERVER -p $SERVER_PORT -J $ARGS > /export/Upload-${CURDATE}.json
+
+  echo "Running ping against $SERVER"
+  substring_point="."
+  substring_slash="/"
+  for out in $(ping -c10 -q -i 0.4 google.com)
+  do
+    sub_point="${out#*$substring_point}"
+    if [ "${sub_point}" != "${out}" ]
+    then
+       sub_slash="${sub_point#*$substring_slash}"
+       if [ "${sub_slash}" != "${sub_point}" ]
+       then
+         ping_min=${out%%/*}
+         cut_string=${out#*/}
+         ping_avg=${cut_string%%/*}
+         cut_string=${cut_string#*/}
+         ping_max=${cut_string%%/*}
+         cut_string=${cut_string#*/}
+         ping_dev=${cut_string%%/*}
+         echo "{\"Ping\":{\"Min\":$ping_min, \"Avg\":$ping_avg, \"Max\":$ping_max, \"Dev\":$ping_dev}}" > /export/Ping-${CURDATE}.json
+       fi
+    fi
+  done
   return 0
 }
 
