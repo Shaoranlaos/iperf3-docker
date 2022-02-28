@@ -3,7 +3,7 @@
 NR_OF_SERVERS=4
 SERVERS_1="ping.online.net"
 SERVERS_2="speedtest.serverius.net"
-SERVERS_3="iperf.astra.in.ua"
+SERVERS_3="ping.online.net"
 SERVERS_4="ping.online.net"
 SERVER_PORTS_1=5207
 SERVER_PORTS_2=5202
