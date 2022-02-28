@@ -39,7 +39,7 @@ run_tests()
     fi
   done
   
-  if [ "$internet_available" -eq "N" ]; then
+  if [ "$internet_available" = "N" ]; then
     echo "No Internet available!"
     return 2
   fi
