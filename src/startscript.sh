@@ -14,17 +14,10 @@ CURDATE=$(date +%F-%H-%M-%S)
 
 run_tests()
 {
-  echo "Running iperf test against $SERVER:$SERVER_PORT"
-
-  /usr/bin/iperf3 -c $SERVER -p $SERVER_PORT -J -R $ARGS > /export/Download-${CURDATE}.json
-  if [ $? -ne 0 ]; then
-    return 1
-  fi
-  /usr/bin/iperf3 -c $SERVER -p $SERVER_PORT -J $ARGS > /export/Upload-${CURDATE}.json
-
   echo "Running ping against $SERVER"
   substring_point="."
   substring_slash="/"
+  internet_available="N"
   for out in $(ping -c10 -q -i 0.4 google.com)
   do
     sub_point="${out#*$substring_point}"
@@ -33,6 +26,7 @@ run_tests()
        sub_slash="${sub_point#*$substring_slash}"
        if [ "${sub_slash}" != "${sub_point}" ]
        then
+         internet_available="Y"
          ping_min=${out%%/*}
          cut_string=${out#*/}
          ping_avg=${cut_string%%/*}
@@ -44,6 +38,19 @@ run_tests()
        fi
     fi
   done
+  
+  if [ "$internet_available" -eq "N" ]; then
+    echo "No Internet available!"
+    return 2
+  fi
+  
+  echo "Running iperf test against $SERVER:$SERVER_PORT"
+
+  /usr/bin/iperf3 -c $SERVER -p $SERVER_PORT -J -R $ARGS > /export/Download-${CURDATE}.json
+  if [ $? -ne 0 ]; then
+    return 1
+  fi
+  /usr/bin/iperf3 -c $SERVER -p $SERVER_PORT -J $ARGS > /export/Upload-${CURDATE}.json
   return 0
 }
 
