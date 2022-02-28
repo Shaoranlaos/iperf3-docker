@@ -44,13 +44,16 @@ run_tests()
     return 2
   fi
   
-  echo "Running iperf test against $SERVER:$SERVER_PORT"
+  echo "Running iperf download test against $SERVER:$SERVER_PORT"
 
   /usr/bin/iperf3 -c $SERVER -p $SERVER_PORT -J -R $ARGS > /export/Download-${CURDATE}.json
   if [ $? -ne 0 ]; then
     return 1
   fi
+  
+  echo "Running iperf upload test against $SERVER:$SERVER_PORT"
   /usr/bin/iperf3 -c $SERVER -p $SERVER_PORT -J $ARGS > /export/Upload-${CURDATE}.json
+  
   return 0
 }
 
